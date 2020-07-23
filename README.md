@@ -1,4 +1,4 @@
-**rootstrap.py: A script to calculate the rootstrap support values for all the branches
+rootstrap.py: A script to calculate the rootstrap support values for all the branches
 
 Syntax:
 
