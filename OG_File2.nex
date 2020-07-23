@@ -1,0 +1,8 @@
+#NEXUS
+begin SETS;
+
+	[outgoups]
+	TAXSET outgroups = Tarentola_mauritanica_EU443255;
+	
+end;
+	
