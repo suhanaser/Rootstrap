@@ -25,5 +25,6 @@ Syntax:
 
 rBED_rSED.py \<tree file>
 
-\<treefile> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  The tree file (rooted tree only in Newick format) where you want to calculate rBED and rSED values.<br />
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Note: In order to calculate rBED and rSED values, the true root should be known (or assumed to e known) in advance.
+\<treefile> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  The tree file (rooted tree only in Newick format) where you want to calculate rBED and rSED values.
+
+Note: In order to calculate rBED and rSED values, the true root should be known (or assumed to e known) in advance.
