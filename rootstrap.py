@@ -110,7 +110,7 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
                 t = Tree(tree)
                 boottrees.append(t.write(format=9))
 
-
+    N_boottrees = len(boottrees)
     booted = [(g[0], len(list(g[1]))) for g in ite.groupby(boottrees)] #a list of all unique bootstrap trees with thier number of occurrence
     boottrees = []
     for b in booted:
@@ -148,7 +148,7 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
                     if group in z:
                         z.remove(group)
             if len(z) == 0:
-                rootstrap_value[node] += split[0]/1000
+                rootstrap_value[node] += split[0]/N_boottrees
             else:
                 rootstrap_value[node] += 0
 
