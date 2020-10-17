@@ -64,7 +64,7 @@ def calculate_rootstrap(treeFile, bootFile, is_rooted, out_group):
     trees = []
     polyphyly = 0
     if not is_rooted:
-        if out_group == None:
+        if out_group is None:
             raise SystemExit('Error: Please provide outgroup taxa in Nexus format')
         ML_tree = Tree(treeFile)
         nex = Nexus.Nexus() 
