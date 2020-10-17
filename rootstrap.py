@@ -104,7 +104,6 @@ def calculate_rootstrap(treeFile, bootFile, is_rooted, out_group):
         ML_tree.write(outfile=rootedMLtree) #write the rooted tree with ingroup taxa only to a file
 
     else:
-        ML_tree = Tree(treeFile)
         with open(bootFile, 'r') as f:
             for tree in f:
                 t = Tree(tree)
