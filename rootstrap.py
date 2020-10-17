@@ -49,7 +49,7 @@ def all_possible_roots(treefile):
                 raise SystemExit('Error: you have unrooted trees. please deactivate the is_rooted flag and provide outgroup taxa file in Nexus format')
     return roots, sameTree
 
-def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
+def calculate_rootstrap(treeFile, bootFile, is_rooted, out_group):
     '''
     input:
         treeFile: rooted tree in newick format (.treefile in IQ-TREE)
@@ -64,7 +64,7 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
     trees = []
     polyphyly = 0
     if not is_rooted:
-        if out_group == None:
+        if out_group is None:
             raise SystemExit('Error: Please provide outgroup taxa in Nexus format')
         ML_tree = Tree(treeFile)
         nex = Nexus.Nexus() 
@@ -104,14 +104,13 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
         ML_tree.write(outfile=rootedMLtree) #write the rooted tree with ingroup taxa only to a file
 
     else:
-        ML_tree = Tree(treeFile)
         with open(bootFile, 'r') as f:
             for tree in f:
                 t = Tree(tree)
                 boottrees.append(t.write(format=9))
 
     N_boottrees = len(boottrees)
-    booted = [(g[0], len(list(g[1]))) for g in ite.groupby(boottrees)] #a list of all unique bootstrap trees with thier number of occurrence
+    booted = [(g[0], len(list(g[1]))) for g in ite.groupby(boottrees)] #a list of all unique bootstrap trees with their number of occurrence
     boottrees = []
     for b in booted:
         t2 = Tree(b[0])
@@ -192,7 +191,7 @@ def rootstrap():
             out_group = sys.argv[4]
     elif len(sys.argv) > 5:
         raise SystemExit('Error: too many arguments')
-    print('Note: ingroup taxa are not monophyletic in {} bootstrap trees\n'.format(caluclate_rootstrap(sys.argv[1], sys.argv[2], is_rooted, out_group)))
+    print('Note: ingroup taxa are not monophyletic in {} bootstrap trees\n'.format(calculate_rootstrap(sys.argv[1], sys.argv[2], is_rooted, out_group)))
 
 if __name__ == '__main__':
     rootstrap()
