@@ -1,0 +1,4 @@
+ete3==3.1.*
+dendropy==4.4.*
+biopython==1.78
+six==1.15.*
