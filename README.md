@@ -1,5 +1,11 @@
 rootstrap.py: A script to calculate the rootstrap support values for all the branches
 
+Dependencies:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ete3
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Biopython
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dendropy
+
 Syntax:
 
 rootstrap.py \<tree file> \<bootstrap trees file> \<is rooted> \<outgroup file>
