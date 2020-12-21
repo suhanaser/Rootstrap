@@ -182,7 +182,20 @@ def rootstrap():
     if len(sys.argv) == 1:
         raise SystemExit('Error: Please provide the ML tree file and the bootstrap trees file')
     elif len(sys.argv) == 2:
-        raise SystemExit('Error: Please provide the ML tree file and the bootstrap trees file')
+        if sys.argv[1] == '-h':
+            print('\n')
+            print('Syntax:\n')
+            print('rootstrap.py <tree file> <bootstrap trees file> <is rooted> <outgroup file>\n')
+            print('<treefile>  \t\t The tree file where you want to calculate the rootstrap support values in Newick format (e.g. tree.treefile)\n.')
+            print('<bootstrap trees file>\t All the bootstrap trees in Newick format. e.g. .ufboot file from IQ-TREE (tree.ufboot)\n')
+            print('<is rooted>  \t\t Are the ML tree and the boostrap trees rooted or not. default: True')
+            print('\t\t\t True - The trees assumed to be rooted and no outgroup taxa infromation is required')
+            print('\t\t\t False - The trees assumed to be unrooted and outgroup taxa infromation is required\n')
+            print('<outgroup file> \t outgroup taxa in Nexus format.')
+            print('\t\t\t The outgroup block can be part of the alignment file or in a separate file\n')
+            return
+        else:
+            raise SystemExit('Error: unknown flag {}. Please provide the ML tree file and the bootstrap trees file'.format(sys.argv[1]))
     elif len(sys.argv) == 4:
         if sys.argv[3] == "False":
             raise SystemExit('Error: Please provide outgroup taxa in Nexus format')
