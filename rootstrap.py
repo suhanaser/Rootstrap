@@ -73,6 +73,21 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
             og = nex.taxsets['outgroups']
         except:
             raise SystemExit('Error: Cannot find outgroup taxa')
+        if len(og) == 1: #if there is one outgroup taxon use it to root the tree
+            ML_root = ML_tree.search_nodes(name=og[0])[0]
+        else: #if there are more than one outgroup taxon find their common ancestor
+            ML_root = ML_tree.get_common_ancestor(og)
+        if not ML_root.is_root():
+            ML_tree.set_outgroup(ML_root)
+        ingroup = [n.name for n in ML_tree.get_leaves() if n.name not in og]
+        try:#check if the ingroup is monophyletic
+            if ML_tree.check_monophyly(values=ingroup, target_attr="name", ignore_missing=True)[0]:
+                ML_tree.prune(ingroup) #prune ingroup taxa only
+                rootedMLtree = os.path.splitext(treeFile)[0]+'_rooted.treefile'
+                ML_tree.write(outfile=rootedMLtree) #write the rooted ML tree with ingroup taxa only to a file
+            else:
+                 raise SystemExit('Error: ML ingroup taxa are not monophyletic')
+
         with open(bootFile, 'r') as f:
             for tree in f:
                 t = Tree(tree)
@@ -99,11 +114,7 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
             t = Tree(tree)
             t.prune(ingroup)
             boottrees.append(t.write(format=9))
-        ML_tree.prune(ingroup) #prune ingroup taxa only
-        rootedMLtree = os.path.splitext(treeFile)[0]+'_rooted.treefile'
-        ML_tree.write(outfile=rootedMLtree) #write the rooted tree with ingroup taxa only to a file
-
-    else:
+    else: #If you are using rooted ML tree and rooted bootstrap trees (e.g. NR model)
         ML_tree = Tree(treeFile)
         with open(bootFile, 'r') as f:
             for tree in f:
