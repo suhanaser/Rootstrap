@@ -15,8 +15,13 @@ import dendropy
 
 def all_possible_roots(treefile):
     '''
-    root tree with all possible root placements
-    This function works with tree files in newick format
+    Parameters
+    ----------
+    treefile: The ML tree (in newick format)
+    
+    Returns
+    -------
+    roots: rooted ML tree with all possible root placements
     '''
     t = Tree(treefile)
     roots = OrderedDict()
@@ -35,42 +40,50 @@ def all_possible_roots(treefile):
             roots[n.name] = t.write(format=9)
         else:
             roots[n.name] = t.write(format=9)
+    return roots
 
-    sameTree = []
-    for n, tree in roots.items():
-        if n == 'n0':
-            t1 = Tree(tree)
-        else:
-            t2 = Tree(tree)
-            try:
-                if t1.robinson_foulds(t2)[0] == 0:
-                    sameTree.append(n)
-            except:
-                raise SystemExit('Error: you have unrooted trees. please deactivate the is_rooted flag and provide outgroup taxa file in Nexus format')
-    return roots, sameTree
+def Read_Nex(f):
+    '''
+    Parameters
+    ----------
+    f : outgroup file in Nexus format
+
+    Returns
+    -------
+    og : list of outgroup taxa
+
+    '''
+    og = []
+    with open(f, 'r') as inf:
+        for line in inf:
+            if ('TAXSET outgroups' in line) or ('taxset outgroups' in line):
+                og = line[line.index('=')+2:line.index(';')].split(" ")
+    return og
 
 def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
     '''
-    input:
-        treeFile: rooted tree in newick format (.treefile in IQ-TREE)
-        bootFile: rooted bootstrap trees in newick format (e.g. .ufboot file in IQ-TREE)
-        rooted: if the bootstrap trees are rooted (defult is True). If not rooted provide 
-                outgroup taxa file
-        og: A file with outgroup taxa in Nexus format
-    output:
-        rootstrapTree: rooted tree with rootstrap support values as branch lengths in newick format
+    Parameters
+    ----------
+    treeFile: rooted tree in newick format (.treefile in IQ-TREE)
+    bootFile: rooted bootstrap trees in newick format (e.g. .ufboot file in IQ-TREE)
+    rooted: if the bootstrap trees are rooted (defult is True). If not rooted provide outgroup taxa file
+    og: A file with outgroup taxa in Nexus format
+    
+    Returns
+    -------
+    rootstrapTree: rooted tree with rootstrap support values as branch lengths in newick format
     '''
+
     boottrees = []
     trees = []
     polyphyly = 0
+    N_boottrees = 0
     if not is_rooted:
         if out_group == None:
             raise SystemExit('Error: Please provide outgroup taxa in Nexus format')
         ML_tree = Tree(treeFile)
-        nex = Nexus.Nexus() 
-        nex.read(out_group) #get the outgroup taxa 
         try:
-            og = nex.taxsets['outgroups']
+            og = Read_Nex(out_group) #get the outgroup taxa
         except:
             raise SystemExit('Error: Cannot find outgroup taxa')
         if len(og) == 1: #if there is one outgroup taxon use it to root the tree
@@ -87,22 +100,22 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
                 ML_tree.write(outfile=rootedMLtree) #write the rooted ML tree with ingroup taxa only to a file
             else:
                  raise SystemExit('Error: ML ingroup taxa are not monophyletic')
-
+        except:
+                    raise SystemExit('Error: ML ingroup taxa are not monophyletic')
+                
         with open(bootFile, 'r') as f:
             for tree in f:
+                N_boottrees += 1
                 t = Tree(tree)
                 ingroup = [n.name for n in t.get_leaves() if n.name not in og]
                 if len(og) == 1: #if there is one outgroup taxon use it to root the tree
                     root = t.search_nodes(name=og[0])[0]
-                    ML_root = ML_tree.search_nodes(name=og[0])[0]
                 elif len(og) > 1: #if there are more than one outgroup taxon find their common ancestor
                     root = t.get_common_ancestor(og)
-                    ML_root = ML_tree.get_common_ancestor(og)
                 else: #if there is no outgroup taxa raise an error
                     raise SystemExit('Error: Please provide outgroup taxa in Nexus format')
                 if not root.is_root():
                     t.set_outgroup(root)
-                    ML_tree.set_outgroup(ML_root)
                 try:#check if the ingroup is monophyletic
                     if t.check_monophyly(values=ingroup, target_attr="name", ignore_missing=True)[0]:
                         trees.append(t.write(format=9))
@@ -110,6 +123,7 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
                         polyphyly += 1
                 except:
                     polyphyly += 1
+        
         for tree in trees:
             t = Tree(tree)
             t.prune(ingroup)
@@ -121,7 +135,6 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
                 t = Tree(tree)
                 boottrees.append(t.write(format=9))
 
-    N_boottrees = len(boottrees)
     booted = [(g[0], len(list(g[1]))) for g in ite.groupby(boottrees)] #a list of all unique bootstrap trees with thier number of occurrence
     boottrees = []
     for b in booted:
@@ -136,9 +149,9 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
                         x.append([i.name for i in child.get_descendants()])
                 boottrees.append([b[1],x])
     if is_rooted:
-        roots, sameTree = all_possible_roots(treeFile)
+        roots = all_possible_roots(treeFile)
     else:
-        roots, sameTree = all_possible_roots(rootedMLtree)
+        roots = all_possible_roots(rootedMLtree)
 
     rootstrap_value = dict.fromkeys(roots.keys(), 0)
     for node, rooted in roots.items():
@@ -173,10 +186,10 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
         if not n.is_root():
             if not n.is_leaf():
                 n.add_features(name='n'+str(k))
-                n.add_features(rootstrap=rootstrap_value[n.name])
+                n.add_features(rootstrap=rootstrap_value[n.name]*100)
                 k += 1
             else:
-                n.add_features(rootstrap=rootstrap_value[n.name])
+                n.add_features(rootstrap=rootstrap_value[n.name]*100)
     temp = os.path.splitext(treeFile)[0]+'.temp'
     rootstrapTree = os.path.splitext(treeFile)[0]+'.rootstrap'
     t.write(outfile=temp, features =["rootstrap"])
