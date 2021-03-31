@@ -132,6 +132,7 @@ def caluclate_rootstrap(treeFile, bootFile, is_rooted, out_group):
         ML_tree = Tree(treeFile)
         with open(bootFile, 'r') as f:
             for tree in f:
+                N_boottrees += 1
                 t = Tree(tree)
                 boottrees.append(t.write(format=9))
 
