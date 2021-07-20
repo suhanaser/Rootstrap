@@ -8,6 +8,18 @@ Dependencies:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dendropy
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To set up your environment for this, you can use conda as follows:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conda create -n rootstrap python=3.6
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conda activate rootstrap
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conda install -c etetoolkit ete3
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conda install -c conda-forge biopython
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conda install -c bioconda dendropy
+
 Syntax:
 
 rootstrap.py \<tree file> \<bootstrap trees file> \<is rooted> \<outgroup file>
