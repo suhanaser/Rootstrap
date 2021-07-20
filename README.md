@@ -48,5 +48,7 @@ This analysis should produce a file called `tree.rootstrap`. This is a tree in n
 ### rBED_rSED.py: A script to calculate the root Branchlength Error Distance (rBED) and the root Split Error Distance (rSED)
 Syntax:
 `rBED_rSED.py <tree file>`
+
 `<treefile>`: The tree file (rooted tree only in Newick format) where you want to calculate rBED and rSED values.
+
 Note: In order to calculate rBED and rSED values, the true root should be known (or assumed to be known) in advance.
